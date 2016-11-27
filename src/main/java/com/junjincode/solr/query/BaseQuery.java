@@ -1,3 +1,4 @@
+package com.junjincode.solr.query;
 
 import org.apache.solr.client.solrj.SolrQuery;
 
@@ -12,6 +13,6 @@ import org.apache.solr.client.solrj.SolrQuery;
  */
 public interface BaseQuery {
 	
-	public void buildQuery(SolrQuery query,Object fieldName,Object fieldValue,Boolean mark) throws Exception;
+	public void buildQuery(SolrQuery query,Object fieldName,Object fieldValue) throws Exception;
 
 }

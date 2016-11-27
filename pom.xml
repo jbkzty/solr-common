@@ -20,6 +20,7 @@
 		<noggit.version>0.6</noggit.version>
 		<httpmime.version>4.3.1</httpmime.version>
 		<commons-io.version>2.3</commons-io.version>
+		<fastjson.version>1.1.41</fastjson.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -90,9 +91,15 @@
 			<version>${jcl-over-slf4j.version}</version>
 		</dependency>
 		<!--solr服务依赖包 -->
-
-
-
+		
+		<!-- JSON STRAT-->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>${fastjson.version}</version>
+		</dependency>
+		<!-- JSON END -->
+		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

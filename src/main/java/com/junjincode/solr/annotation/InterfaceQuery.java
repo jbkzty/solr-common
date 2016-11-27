@@ -5,15 +5,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * solrCore 对应的实例名称
- * @author junjin4838
- *
- */
-@Retention(RetentionPolicy.RUNTIME)  
-@Target(ElementType.TYPE)
-public @interface SolrCoreName {
+import com.junjincode.solr.constant.SolrSearchType;
 
-	String solrName();
+/**
+ * <p>Title: SolrQuery.java</p>
+ * <p>Description: </p>
+ * @author junjin4838
+ * @date 2016年11月27日
+ * @version 1.0
+ */
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface InterfaceQuery {
 	
+	SolrSearchType type();
+
 }

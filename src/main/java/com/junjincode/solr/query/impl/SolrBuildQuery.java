@@ -3,6 +3,8 @@ package com.junjincode.solr.query.impl;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.params.CommonParams;
 
+import com.junjincode.solr.annotation.InterfaceQuery;
+import com.junjincode.solr.constant.SolrSearchType;
 import com.junjincode.solr.query.BaseQuery;
 import com.junjincode.solr.util.StringUtils;
 
@@ -15,6 +17,7 @@ import com.junjincode.solr.util.StringUtils;
  * @date 2016年11月27日
  * @version 1.0
  */
+@InterfaceQuery(type = SolrSearchType.Q)
 public class SolrBuildQuery implements BaseQuery {
 	
 	/**
@@ -24,7 +27,7 @@ public class SolrBuildQuery implements BaseQuery {
 	 * @param value 查询关键字
 	 * 
 	 */
-	public void buildQuery(SolrQuery query, Object fieldName,Object fieldValue, Boolean mark) throws Exception {
+	public void buildQuery(SolrQuery query, Object fieldName,Object fieldValue) throws Exception {
 		
 		if(StringUtils.isEmpty(fieldName)){
 			throw new RuntimeException("字段");
