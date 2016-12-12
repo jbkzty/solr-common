@@ -91,15 +91,15 @@ public class XFilterModel {
   private String sSaleStatusID;
   
   // 是否在售
-  @SolrField(type = SolrSearchType.FQ, requestName = "iSaleOut_i", solrName = "xf_saleOut_i")
+  @SolrField(type = SolrSearchType.FQ, requestName = "sTag", solrName = "xf_tag")
   private String iSaleOut_i;
   
   // 楼盘总价
-  @SolrField(type = SolrSearchType.FQ, requestName = "iTotalPrice_i", solrName = "xf_total_price")
+  @SolrField(type = SolrSearchType.FQ, requestName = "sKycTag", solrName = "xf_kycTag")
   private String iTotalPrice_i;
   
   // 楼盘面积
-  @SolrField(type = SolrSearchType.FQ, requestName = "iSpace", solrName = "xf_spaces")
+  @SolrField(type = SolrSearchType.FQ, requestName = "sDesc", solrName = "xf_desc")
   private String iSpace;
 
   // 特殊字段，需要解析JSON { "sDesc":"...", "sKycTag":"...", "sTag":"..." }
