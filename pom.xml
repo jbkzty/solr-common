@@ -10,7 +10,7 @@
 	<name>solr-common</name>
 
 	<properties>
-		<solrj.version>5.2.0</solrj.version>
+		<solrj.version>6.2.0</solrj.version>
 		<httpcore.version>4.3</httpcore.version>
 		<httpclient.version>4.3.1</httpclient.version>
 		<jul-to-slf4j.version>1.7.6</jul-to-slf4j.version>
@@ -91,15 +91,35 @@
 			<version>${jcl-over-slf4j.version}</version>
 		</dependency>
 		<!--solr服务依赖包 -->
-		
-		<!-- JSON STRAT-->
+
+		<!-- JSON STRAT -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
 			<version>${fastjson.version}</version>
 		</dependency>
 		<!-- JSON END -->
-		
+
+		<!-- 日志文件管理包 start -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j-api.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j-log4j12}</version>
+		</dependency>
+		<!-- 日志文件管理包 end -->
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

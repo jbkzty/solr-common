@@ -1,11 +1,11 @@
 package com.junjincode.solr.constant;
 
+
 /**
- * <p>Description: 入参的搜索标识</p>
- * <p>Copyright: Copyright (c) 2016</p>
+ * 入参的搜索标识
+ * 
  * @author junjin4838
- * @date 2016年11月27日
- * @version 1.0
+ *
  */
 public enum SolrSearchType {
 
@@ -18,16 +18,16 @@ public enum SolrSearchType {
    * 过滤查询
    */
   FQ,
-  
-  /**
-   * 区间查询
-   */
-  RANGE_FQ,
 
   /**
    * 分页参数
    */
   PAGE,
+  
+  /**
+   * 价格参数
+   */
+  PRICE,
 
   /**
    * 排序
@@ -37,11 +37,16 @@ public enum SolrSearchType {
   /**
    * 自定义的FQ (可以封装成OR来拼接参数)
    */
-  DEFINED_FQ,
+  DEFINED_FQ_OR,
+  
+  /**
+   * 自定义的FQ (优惠时间字段)
+   */
+  DEFINED_FQ_DISCOUNT,
 
   /**
-   * 自定义的FQ (可以封装成OR来拼接参数 + 业务处理)
+   * 自定义的FQ (优惠时间字段 + 是否金融支持)
    */
-  DEFINED_FQ_SYS;
+  DEFINED_FQ_DISCOUNT_OR;
 
 }

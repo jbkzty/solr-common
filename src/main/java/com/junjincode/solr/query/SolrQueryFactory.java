@@ -3,12 +3,13 @@ package com.junjincode.solr.query;
 import java.io.File;
 import java.io.FileFilter;
 import java.lang.annotation.Annotation;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.junjincode.solr.annotation.InterfaceQuery;
 import com.junjincode.solr.constant.SolrSearchType;
+import com.junjincode.solr.service.SolrBaseQuery;
 
 /**
  * <p>
@@ -21,67 +22,89 @@ import com.junjincode.solr.constant.SolrSearchType;
  */
 public class SolrQueryFactory {
 
+	/**
+	 * 放置缓存信息
+	 */
+	private static ConcurrentHashMap<SolrSearchType, SolrBaseQuery> serviceImplMap = new ConcurrentHashMap<SolrSearchType, SolrBaseQuery>();
+
 	// 需要扫描的包路径
-	private static String NEED_TO_SCANPACKAGE = "com.junjincode.solr.query.impl";
+	private static String NEED_TO_SCANPACKAGE = "com.junjincode.solr.service.impl";
 
 	// 类加载器
 	private ClassLoader classLoader = getClass().getClassLoader();
 
 	// 查询实现接口
-	private List<Class<? extends BaseQuery>> queryList = null;
-	
-	//使用private 来防止外界new这个实例
-	private SolrQueryFactory(){
+	private List<Class<? extends SolrBaseQuery>> queryList = null;
+
+	// 使用private 来防止外界new这个实例
+	private SolrQueryFactory() {
 		init();
+		initService();
 	}
-	
-	public static SolrQueryFactory getInstance(){
+
+	public static SolrQueryFactory getInstance() {
 		return SolrQueryFactoryInstance.instance;
 	}
-	
-	public static class SolrQueryFactoryInstance{
+
+	public static class SolrQueryFactoryInstance {
 		private static SolrQueryFactory instance = new SolrQueryFactory();
 	}
-	
+
 	/**
-	 * 传入的搜索类型来选择具体的策略类
+	 * 传入的搜索类型来选择具体的策略类 （增加缓存）
+	 * 
 	 * @param solrSearchType
 	 */
-	public BaseQuery buildSolrQuery(SolrSearchType solrSearchType){
-		
-		for (Class<? extends BaseQuery> clazz : queryList) {
-			InterfaceQuery clazzOfAnnotation = handleAnnotation(clazz);
-			if(solrSearchType.equals(clazzOfAnnotation)){
-				try {
-					return clazz.newInstance();
-				} catch (Exception e) {
-					throw new RuntimeException("策略获得失败");
-				} 
-			}
-		}
-		throw new RuntimeException("策略获得失败");
+	public SolrBaseQuery buildSolrQuery(SolrSearchType solrSearchType) {
+
+		return serviceImplMap.get(solrSearchType);
+
 	}
-	
+
 	/**
 	 * 处理注解类
-	 * @param clazz  传入的策略类
+	 * 
+	 * @param clazz
+	 *            传入的策略类
 	 * @return 返回相应的注解
 	 */
-	private InterfaceQuery handleAnnotation(Class<? extends BaseQuery> clazz){
-		
+	private InterfaceQuery handleAnnotation(Class<? extends SolrBaseQuery> clazz) {
+
 		Annotation[] annotations = clazz.getDeclaredAnnotations();
-		if(annotations == null || annotations.length ==0){
+		if (annotations == null || annotations.length == 0) {
 			return null;
 		}
-		
-		for(int i=0;i<annotations.length;i++){
-			if(annotations[i] instanceof InterfaceQuery){
-				return (InterfaceQuery)annotations[i];
+
+		for (int i = 0; i < annotations.length; i++) {
+			if (annotations[i] instanceof InterfaceQuery) {
+				return (InterfaceQuery) annotations[i];
 			}
 		}
-		
+
 		return null;
-		
+
+	}
+
+	/**
+	 * 初始化接口实现类的对应关系
+	 */
+	public void initService() {
+
+		for (Class<? extends SolrBaseQuery> clazz : queryList) {
+
+			InterfaceQuery clazzOfAnnotation = handleAnnotation(clazz);
+
+			SolrBaseQuery solrQueryClazz = null;
+			try {
+				solrQueryClazz = clazz.newInstance();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			serviceImplMap.put(clazzOfAnnotation.type(), solrQueryClazz);
+
+		}
+
 	}
 
 	/**
@@ -90,15 +113,15 @@ public class SolrQueryFactory {
 	@SuppressWarnings("unchecked")
 	private void init() {
 
-		queryList = new ArrayList<Class<? extends BaseQuery>>();
+		queryList = new ArrayList<Class<? extends SolrBaseQuery>>();
 
 		// 获取包下面所有的class资源
 		File[] resources = getResourse();
-		Class<BaseQuery> baseQueryClazz = null;
+		Class<SolrBaseQuery> baseQueryClazz = null;
 
 		try {
 			// 使用相同的类接口加载策略接口
-			baseQueryClazz = (Class<BaseQuery>) classLoader.loadClass(BaseQuery.class.getName());
+			baseQueryClazz = (Class<SolrBaseQuery>) classLoader.loadClass(SolrBaseQuery.class.getName());
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("未找到策略接口");
 		}
@@ -107,9 +130,11 @@ public class SolrQueryFactory {
 			try {
 				Class<?> clazz = classLoader.loadClass(NEED_TO_SCANPACKAGE + "." + resources[i].getName().replace(".class", ""));
 				System.out.println("获取文件的名称： " + resources[i].getName());
-				if (BaseQuery.class.isAssignableFrom(clazz) && clazz != baseQueryClazz) {
-					queryList.add((Class<? extends BaseQuery>) clazz);
+				if (SolrBaseQuery.class.isAssignableFrom(clazz)
+						&& clazz != baseQueryClazz) {
+					queryList.add((Class<? extends SolrBaseQuery>) clazz);
 				}
+
 			} catch (ClassNotFoundException e) {
 				throw new RuntimeException("添加策略接口失败");
 			}
@@ -134,10 +159,9 @@ public class SolrQueryFactory {
 					return false;
 				}
 			});
-		} catch (URISyntaxException e) {
+		} catch (Exception e) {
 			throw new RuntimeException("未找到策略资源");
 		}
 	}
-
 
 }
